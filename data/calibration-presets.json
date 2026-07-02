@@ -1,0 +1,15 @@
+[
+  {
+    "id": "default",
+    "name": "Default",
+    "settings": {
+      "shiftHours": 9,
+      "maxFactor": 89,
+      "baseAllowance": 0,
+      "rampCurve": 1,
+      "batchSensitivity": 100
+    },
+    "createdAt": null,
+    "updatedAt": null
+  }
+]

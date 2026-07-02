@@ -89,6 +89,26 @@ Current storage is browser-local:
 
 Because the app runs as plain static HTML, the browser cannot silently write files next to `index.html`, even if the folder is writable through Samba. A future version can add File System Access API support for user-approved shared-folder writes.
 
+## Shared Data Folder
+
+The repository includes a reserved `data/` folder:
+
+```text
+data/
+|-- README.md
+|-- calibration-presets.json
+|-- active-calibration.json
+`-- logs.jsonl
+```
+
+This folder is intended to become the shared storage location for production use. When shared-folder storage is added, each workstation should connect to the same `data` folder next to `index.html`.
+
+Initial shared files:
+
+- `data/calibration-presets.json` - default calibration preset seed.
+- `data/active-calibration.json` - active shared preset pointer.
+- `data/logs.jsonl` - append-style production log file.
+
 ## License
 
 MIT License 2026.
