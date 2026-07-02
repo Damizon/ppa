@@ -163,7 +163,7 @@
     function renderStorageStatus() {
         const status = storage.getStorageStatus();
 
-        elements.storageStatus.innerText = status.sharedConnected ? 'Shared Data Folder' : 'Local Browser';
+        elements.storageStatus.innerText = status.sharedConnected ? 'Shared Data Folder' : 'Folder not connected';
         elements.connectStorageBtn.disabled = !status.sharedSupported;
         elements.disconnectStorageBtn.disabled = !status.sharedConnected;
     }
@@ -173,10 +173,17 @@
 
         presets.push(preset);
         selectedPresetId = preset.id;
-        await savePresetList();
-        await setActivePreset(preset.id);
-        renderPresetOptions();
-        alert('Calibration preset saved.');
+        try {
+            await savePresetList();
+            await setActivePreset(preset.id);
+            renderPresetOptions();
+            alert('Calibration preset saved.');
+        } catch (error) {
+            presets = presets.filter((item) => item.id !== preset.id);
+            selectedPresetId = activePresetId;
+            renderPresetOptions();
+            alert(error.message || 'Shared data folder is not connected.');
+        }
     }
 
     async function updateSelectedPreset() {
@@ -193,10 +200,14 @@
         preset.name = readPresetName();
         preset.settings = readSettings();
         preset.updatedAt = new Date().toISOString();
-        await savePresetList();
-        await setActivePreset(preset.id);
-        renderPresetOptions();
-        alert('Calibration preset updated.');
+        try {
+            await savePresetList();
+            await setActivePreset(preset.id);
+            renderPresetOptions();
+            alert('Calibration preset updated.');
+        } catch (error) {
+            alert(error.message || 'Shared data folder is not connected.');
+        }
     }
 
     async function deleteSelectedPreset() {
@@ -217,9 +228,13 @@
         }
 
         selectedPresetId = activePresetId;
-        await savePresetList();
-        renderPresetOptions();
-        loadPreset(selectedPresetId);
+        try {
+            await savePresetList();
+            renderPresetOptions();
+            loadPreset(selectedPresetId);
+        } catch (error) {
+            alert(error.message || 'Shared data folder is not connected.');
+        }
     }
 
     async function setActivePreset(id) {

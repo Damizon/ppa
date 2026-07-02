@@ -2,8 +2,8 @@
     const localStorageApi = window.ProdTimerLocalStorage;
     const fileStorageApi = window.ProdTimerFileStorage;
 
-    let activeStorage = localStorageApi;
-    let mode = 'local';
+    let activeStorage = null;
+    let mode = 'disconnected';
 
     async function init(defaultSettings) {
         if (!fileStorageApi) {
@@ -41,23 +41,32 @@
             await fileStorageApi.disconnect();
         }
 
-        activeStorage = localStorageApi;
-        mode = 'local';
+        activeStorage = null;
+        mode = 'disconnected';
     }
 
     function getStorageStatus() {
         return {
             mode,
             sharedSupported: Boolean(fileStorageApi && fileStorageApi.isSupported()),
-            sharedConnected: mode === 'shared'
+            sharedConnected: mode === 'shared',
+            requiresConnection: true
         };
     }
 
     async function loadHistory() {
+        if (!activeStorage) {
+            return [];
+        }
+
         return activeStorage.loadHistory();
     }
 
     async function loadAllHistory() {
+        if (!activeStorage) {
+            return [];
+        }
+
         if (activeStorage.loadAllHistory) {
             return activeStorage.loadAllHistory();
         }
@@ -66,6 +75,8 @@
     }
 
     async function saveHistory(history) {
+        requireStorageConnection();
+
         if (activeStorage.saveHistory) {
             return activeStorage.saveHistory(history);
         }
@@ -74,31 +85,63 @@
     }
 
     async function addHistoryEntry(entry) {
+        requireStorageConnection();
         return activeStorage.addHistoryEntry(entry);
     }
 
     async function loadCalibrationSettings(defaultSettings) {
+        if (!activeStorage) {
+            return defaultSettings;
+        }
+
         return activeStorage.loadCalibrationSettings(defaultSettings);
     }
 
     async function saveCalibrationSettings(settings) {
+        requireStorageConnection();
         return activeStorage.saveCalibrationSettings(settings);
     }
 
     async function loadCalibrationPresets(defaultSettings) {
+        if (!activeStorage) {
+            return [createDefaultPreset(defaultSettings)];
+        }
+
         return activeStorage.loadCalibrationPresets(defaultSettings);
     }
 
     async function saveCalibrationPresets(presets) {
+        requireStorageConnection();
         return activeStorage.saveCalibrationPresets(presets);
     }
 
     async function loadActiveCalibrationPreset(defaultSettings) {
+        if (!activeStorage) {
+            return createDefaultPreset(defaultSettings);
+        }
+
         return activeStorage.loadActiveCalibrationPreset(defaultSettings);
     }
 
     async function saveActiveCalibrationPresetId(id) {
+        requireStorageConnection();
         return activeStorage.saveActiveCalibrationPresetId(id);
+    }
+
+    function requireStorageConnection() {
+        if (!activeStorage) {
+            throw new Error('Shared data folder is not connected. Click CONNECT DATA FOLDER and select the data folder located next to this app.');
+        }
+    }
+
+    function createDefaultPreset(defaultSettings) {
+        return {
+            id: localStorageApi.DEFAULT_PRESET_ID,
+            name: 'Default',
+            settings: defaultSettings,
+            createdAt: null,
+            updatedAt: null
+        };
     }
 
     window.ProdTimerStorage = {

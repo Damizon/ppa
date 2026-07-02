@@ -85,18 +85,17 @@ The active preset name is shown on the main timer page.
 
 ## Storage Notes
 
-The app supports two storage modes:
+The app requires shared file storage for production data:
 
-- `Local Browser` - browser `localStorage`, used as the default fallback.
 - `Shared Data Folder` - user-approved file storage through the File System Access API.
 
-In local mode, data is stored under these browser keys:
+Older versions used browser `localStorage` under these keys, but production data should now be stored only in the shared `data` folder:
 
 - activity log: `genericProdLog`
 - calibration presets: `prodTimerCalibrationPresets`
 - active preset: `prodTimerActiveCalibrationPresetId`
 
-Because the app runs as plain static HTML, the browser cannot silently write files next to `index.html`, even if the folder is writable through Samba. To write shared files, use `Connect Data Folder` and select the `data` folder.
+Because the app runs as plain static HTML, the browser cannot silently write files next to `index.html`, even if the folder is writable through Samba. To write shared files, use `Connect Data Folder` and select the `data` folder. Browsers do not allow the app to preselect the exact folder path automatically.
 
 ## Shared Data Folder
 

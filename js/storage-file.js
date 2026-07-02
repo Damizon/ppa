@@ -42,8 +42,8 @@
         }
 
         directoryHandle = await window.showDirectoryPicker({
-            mode: 'readwrite',
-            startIn: 'documents'
+            id: 'production-pro-timer-data',
+            mode: 'readwrite'
         });
 
         if (directoryHandle.name !== 'data' && !confirm('The selected folder is not named "data". Use this folder anyway?')) {

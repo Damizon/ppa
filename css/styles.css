@@ -276,6 +276,12 @@ select {
     font-size: 13px;
 }
 
+.storage-panel small {
+    color: #666;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
 .storage-panel strong {
     color: #0056b3;
 }

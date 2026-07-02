@@ -191,7 +191,7 @@
     function renderStorageStatus() {
         const status = storage.getStorageStatus();
 
-        elements.storageStatus.innerText = status.sharedConnected ? 'Shared Data Folder' : 'Local Browser';
+        elements.storageStatus.innerText = status.sharedConnected ? 'Shared Data Folder' : 'Folder not connected';
         elements.connectStorageBtn.disabled = !status.sharedSupported;
         elements.disconnectStorageBtn.disabled = !status.sharedConnected;
     }
@@ -213,9 +213,13 @@
             duration: format.formatHms(state.elapsedTime / 1000)
         };
 
-        const history = await storage.addHistoryEntry(entry);
-        updateLogDisplay(history);
-        alert('Log saved.');
+        try {
+            const history = await storage.addHistoryEntry(entry);
+            updateLogDisplay(history);
+            alert('Log saved.');
+        } catch (error) {
+            alert(error.message || 'Shared data folder is not connected.');
+        }
     }
 
     function updateLogDisplay(history) {

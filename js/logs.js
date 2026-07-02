@@ -47,7 +47,7 @@
     function renderStorageStatus() {
         const status = storage.getStorageStatus();
 
-        elements.storageStatus.innerText = status.sharedConnected ? 'Shared Data Folder' : 'Local Browser';
+        elements.storageStatus.innerText = status.sharedConnected ? 'Shared Data Folder' : 'Folder not connected';
         elements.connectStorageBtn.disabled = !status.sharedSupported;
         elements.disconnectStorageBtn.disabled = !status.sharedConnected;
     }
