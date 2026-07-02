@@ -9,12 +9,14 @@
 
     window.addEventListener('DOMContentLoaded', init);
 
-    function init() {
+    async function init() {
         cacheElements();
-        presets = storage.loadCalibrationPresets(calculator.DEFAULT_SETTINGS);
-        activePresetId = storage.loadActiveCalibrationPreset(calculator.DEFAULT_SETTINGS).id;
+        await storage.init(calculator.DEFAULT_SETTINGS);
+        presets = await storage.loadCalibrationPresets(calculator.DEFAULT_SETTINGS);
+        activePresetId = (await storage.loadActiveCalibrationPreset(calculator.DEFAULT_SETTINGS)).id;
         selectedPresetId = activePresetId;
         bindEvents();
+        renderStorageStatus();
         renderPresetOptions();
         loadPreset(selectedPresetId);
         updateKnownJob();
@@ -52,7 +54,10 @@
             'updatePresetBtn',
             'deletePresetBtn',
             'loadDefaultsBtn',
-            'autoFitBtn'
+            'autoFitBtn',
+            'storageStatus',
+            'connectStorageBtn',
+            'disconnectStorageBtn'
         ].forEach((id) => {
             elements[id] = document.getElementById(id);
         });
@@ -76,14 +81,16 @@
             loadPreset(selectedPresetId);
         });
 
-        elements.loadPresetBtn.addEventListener('click', () => {
+        elements.loadPresetBtn.addEventListener('click', async () => {
             loadPreset(elements.presetSelect.value);
-            setActivePreset(elements.presetSelect.value);
+            await setActivePreset(elements.presetSelect.value);
         });
 
         elements.saveAsPresetBtn.addEventListener('click', saveAsNewPreset);
         elements.updatePresetBtn.addEventListener('click', updateSelectedPreset);
         elements.deletePresetBtn.addEventListener('click', deleteSelectedPreset);
+        elements.connectStorageBtn.addEventListener('click', connectSharedStorage);
+        elements.disconnectStorageBtn.addEventListener('click', disconnectSharedStorage);
 
         elements.loadDefaultsBtn.addEventListener('click', () => {
             setSettings(calculator.DEFAULT_SETTINGS);
@@ -129,18 +136,50 @@
         updatePreview();
     }
 
-    function saveAsNewPreset() {
+    async function connectSharedStorage() {
+        try {
+            await storage.connectSharedFolder(calculator.DEFAULT_SETTINGS);
+            presets = await storage.loadCalibrationPresets(calculator.DEFAULT_SETTINGS);
+            activePresetId = (await storage.loadActiveCalibrationPreset(calculator.DEFAULT_SETTINGS)).id;
+            selectedPresetId = activePresetId;
+            renderStorageStatus();
+            renderPresetOptions();
+            loadPreset(selectedPresetId);
+        } catch (error) {
+            alert(error.message || 'Shared data folder connection failed.');
+        }
+    }
+
+    async function disconnectSharedStorage() {
+        await storage.disconnectSharedFolder();
+        presets = await storage.loadCalibrationPresets(calculator.DEFAULT_SETTINGS);
+        activePresetId = (await storage.loadActiveCalibrationPreset(calculator.DEFAULT_SETTINGS)).id;
+        selectedPresetId = activePresetId;
+        renderStorageStatus();
+        renderPresetOptions();
+        loadPreset(selectedPresetId);
+    }
+
+    function renderStorageStatus() {
+        const status = storage.getStorageStatus();
+
+        elements.storageStatus.innerText = status.sharedConnected ? 'Shared Data Folder' : 'Local Browser';
+        elements.connectStorageBtn.disabled = !status.sharedSupported;
+        elements.disconnectStorageBtn.disabled = !status.sharedConnected;
+    }
+
+    async function saveAsNewPreset() {
         const preset = storage.createCalibrationPreset(readPresetName(), readSettings());
 
         presets.push(preset);
         selectedPresetId = preset.id;
-        savePresetList();
-        setActivePreset(preset.id);
+        await savePresetList();
+        await setActivePreset(preset.id);
         renderPresetOptions();
         alert('Calibration preset saved.');
     }
 
-    function updateSelectedPreset() {
+    async function updateSelectedPreset() {
         if (selectedPresetId === storage.DEFAULT_PRESET_ID) {
             return;
         }
@@ -154,13 +193,13 @@
         preset.name = readPresetName();
         preset.settings = readSettings();
         preset.updatedAt = new Date().toISOString();
-        savePresetList();
-        setActivePreset(preset.id);
+        await savePresetList();
+        await setActivePreset(preset.id);
         renderPresetOptions();
         alert('Calibration preset updated.');
     }
 
-    function deleteSelectedPreset() {
+    async function deleteSelectedPreset() {
         if (selectedPresetId === storage.DEFAULT_PRESET_ID) {
             return;
         }
@@ -174,22 +213,22 @@
         presets = presets.filter((item) => item.id !== selectedPresetId);
 
         if (activePresetId === selectedPresetId) {
-            setActivePreset(storage.DEFAULT_PRESET_ID);
+            await setActivePreset(storage.DEFAULT_PRESET_ID);
         }
 
         selectedPresetId = activePresetId;
-        savePresetList();
+        await savePresetList();
         renderPresetOptions();
         loadPreset(selectedPresetId);
     }
 
-    function setActivePreset(id) {
+    async function setActivePreset(id) {
         activePresetId = id;
-        storage.saveActiveCalibrationPresetId(id);
+        await storage.saveActiveCalibrationPresetId(id);
 
         const activePreset = findPreset(activePresetId);
         if (activePreset) {
-            storage.saveCalibrationSettings(activePreset.settings);
+            await storage.saveCalibrationSettings(activePreset.settings);
         }
 
         renderPresetActions();
@@ -305,8 +344,8 @@
         return presets.find((preset) => preset.id === id);
     }
 
-    function savePresetList() {
-        storage.saveCalibrationPresets(presets);
+    async function savePresetList() {
+        await storage.saveCalibrationPresets(presets);
     }
 
     function formatSignedPercent(value) {

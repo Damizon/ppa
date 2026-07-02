@@ -24,18 +24,20 @@
         }
     });
 
-    function init() {
+    async function init() {
         cacheElements();
 
         timer = timerFactory.createTimer({
             onChange: handleTimerChange
         });
 
-        activeCalibrationPreset = storage.loadActiveCalibrationPreset(calculator.DEFAULT_SETTINGS);
+        await storage.init(calculator.DEFAULT_SETTINGS);
+        activeCalibrationPreset = await storage.loadActiveCalibrationPreset(calculator.DEFAULT_SETTINGS);
         calibrationSettings = activeCalibrationPreset.settings;
         bindEvents();
+        renderStorageStatus();
         renderActiveCalibration();
-        updateLogDisplay(storage.loadHistory());
+        updateLogDisplay(await storage.loadHistory());
         calculate();
     }
 
@@ -60,6 +62,9 @@
         elements.realEstClock = document.getElementById('realEstClock');
         elements.realEstDec = document.getElementById('realEstDec');
         elements.activeCalibration = document.getElementById('activeCalibration');
+        elements.storageStatus = document.getElementById('storageStatus');
+        elements.connectStorageBtn = document.getElementById('connectStorageBtn');
+        elements.disconnectStorageBtn = document.getElementById('disconnectStorageBtn');
     }
 
     function bindEvents() {
@@ -69,6 +74,8 @@
         elements.mainBtn.addEventListener('click', () => timer.toggle());
         elements.resetBtn.addEventListener('click', resetAll);
         elements.saveBtn.addEventListener('click', saveToLog);
+        elements.connectStorageBtn.addEventListener('click', connectSharedStorage);
+        elements.disconnectStorageBtn.addEventListener('click', disconnectSharedStorage);
 
         [elements.hours, elements.minutes, elements.seconds].forEach((input) => {
             input.addEventListener('change', manualInput);
@@ -157,7 +164,39 @@
         elements.activeCalibration.innerText = activeCalibrationPreset.name;
     }
 
-    function saveToLog() {
+    async function connectSharedStorage() {
+        try {
+            await storage.connectSharedFolder(calculator.DEFAULT_SETTINGS);
+            activeCalibrationPreset = await storage.loadActiveCalibrationPreset(calculator.DEFAULT_SETTINGS);
+            calibrationSettings = activeCalibrationPreset.settings;
+            renderStorageStatus();
+            renderActiveCalibration();
+            updateLogDisplay(await storage.loadHistory());
+            calculate();
+        } catch (error) {
+            alert(error.message || 'Shared data folder connection failed.');
+        }
+    }
+
+    async function disconnectSharedStorage() {
+        await storage.disconnectSharedFolder();
+        activeCalibrationPreset = await storage.loadActiveCalibrationPreset(calculator.DEFAULT_SETTINGS);
+        calibrationSettings = activeCalibrationPreset.settings;
+        renderStorageStatus();
+        renderActiveCalibration();
+        updateLogDisplay(await storage.loadHistory());
+        calculate();
+    }
+
+    function renderStorageStatus() {
+        const status = storage.getStorageStatus();
+
+        elements.storageStatus.innerText = status.sharedConnected ? 'Shared Data Folder' : 'Local Browser';
+        elements.connectStorageBtn.disabled = !status.sharedSupported;
+        elements.disconnectStorageBtn.disabled = !status.sharedConnected;
+    }
+
+    async function saveToLog() {
         const state = timer.getState();
 
         if (state.elapsedTime === 0) {
@@ -174,7 +213,7 @@
             duration: format.formatHms(state.elapsedTime / 1000)
         };
 
-        const history = storage.addHistoryEntry(entry);
+        const history = await storage.addHistoryEntry(entry);
         updateLogDisplay(history);
         alert('Log saved.');
     }

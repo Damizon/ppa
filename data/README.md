@@ -2,7 +2,7 @@
 
 This folder is reserved for shared Production Pro Timer data.
 
-When shared-folder storage is enabled in the app, every workstation should select this exact `data` folder. In a Samba deployment, keep this folder next to `index.html` so users can easily find the correct location.
+Every workstation should use the `Connect Data Folder` button in the app and select this exact `data` folder. In a Samba deployment, keep this folder next to `index.html` so users can easily find the correct location.
 
 Expected files:
 

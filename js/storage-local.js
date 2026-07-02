@@ -127,7 +127,7 @@
         return 'preset-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
     }
 
-    window.ProdTimerStorage = {
+    const api = {
         loadHistory,
         saveHistory,
         addHistoryEntry,
@@ -140,4 +140,7 @@
         createCalibrationPreset,
         DEFAULT_PRESET_ID
     };
+
+    window.ProdTimerLocalStorage = api;
+    window.ProdTimerStorage = api;
 })();

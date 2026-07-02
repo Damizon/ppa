@@ -29,7 +29,9 @@ The app is designed to run as static files. You can open `index.html` directly f
     |-- calculator.js       # Production estimate algorithm
     |-- calibration.js      # Calibration page logic
     |-- format.js           # Time formatting helpers
+    |-- storage-file.js     # shared data folder persistence
     |-- storage-local.js    # localStorage persistence
+    |-- storage-manager.js  # storage mode selection
     `-- timer.js            # Timer state and elapsed time handling
 ```
 
@@ -67,7 +69,7 @@ Correction: +29.5%
 
 ## Calibration Presets
 
-Calibration presets are stored in the browser using `localStorage`.
+Calibration presets are stored in the active storage mode.
 
 You can:
 
@@ -81,13 +83,18 @@ The active preset name is shown on the main timer page.
 
 ## Storage Notes
 
-Current storage is browser-local:
+The app supports two storage modes:
+
+- `Local Browser` - browser `localStorage`, used as the default fallback.
+- `Shared Data Folder` - user-approved file storage through the File System Access API.
+
+In local mode, data is stored under these browser keys:
 
 - activity log: `genericProdLog`
 - calibration presets: `prodTimerCalibrationPresets`
 - active preset: `prodTimerActiveCalibrationPresetId`
 
-Because the app runs as plain static HTML, the browser cannot silently write files next to `index.html`, even if the folder is writable through Samba. A future version can add File System Access API support for user-approved shared-folder writes.
+Because the app runs as plain static HTML, the browser cannot silently write files next to `index.html`, even if the folder is writable through Samba. To write shared files, use `Connect Data Folder` and select the `data` folder.
 
 ## Shared Data Folder
 
@@ -101,13 +108,15 @@ data/
 `-- logs.jsonl
 ```
 
-This folder is intended to become the shared storage location for production use. When shared-folder storage is added, each workstation should connect to the same `data` folder next to `index.html`.
+This folder is the shared storage location for production use. Each workstation should click `Connect Data Folder` and select the same `data` folder next to `index.html`.
 
 Initial shared files:
 
 - `data/calibration-presets.json` - default calibration preset seed.
 - `data/active-calibration.json` - active shared preset pointer.
 - `data/logs.jsonl` - append-style production log file.
+
+Browser support note: shared folder storage requires File System Access API support, which is available in Chromium-based browsers such as Chrome and Edge. If unsupported or disconnected, the app falls back to local browser storage.
 
 ## License
 

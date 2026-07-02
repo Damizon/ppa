@@ -259,6 +259,35 @@ select {
     font-size: 10px;
 }
 
+.storage-panel {
+    background: white;
+    border-left: 4px solid #0056b3;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    display: grid;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 12px;
+}
+
+.storage-panel span {
+    color: #555;
+    font-size: 13px;
+}
+
+.storage-panel strong {
+    color: #0056b3;
+}
+
+.storage-panel .secondary-btn {
+    width: 100%;
+}
+
+.calibration-storage-panel {
+    margin-bottom: 18px;
+}
+
 .methodology-link {
     display: block;
     text-align: center;
