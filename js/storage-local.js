@@ -1,5 +1,6 @@
 (function () {
     const STORAGE_KEY = 'genericProdLog';
+    const SETTINGS_KEY = 'prodTimerCalibrationSettings';
     const HISTORY_LIMIT = 5;
 
     function loadHistory() {
@@ -22,9 +23,20 @@
         return history;
     }
 
+    function loadCalibrationSettings(defaultSettings) {
+        const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {};
+        return Object.assign({}, defaultSettings, savedSettings);
+    }
+
+    function saveCalibrationSettings(settings) {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    }
+
     window.ProdTimerStorage = {
         loadHistory,
         saveHistory,
-        addHistoryEntry
+        addHistoryEntry,
+        loadCalibrationSettings,
+        saveCalibrationSettings
     };
 })();

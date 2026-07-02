@@ -6,6 +6,7 @@
 
     const elements = {};
     let timer;
+    let calibrationSettings;
 
     window.addEventListener('DOMContentLoaded', init);
 
@@ -29,6 +30,7 @@
             onChange: handleTimerChange
         });
 
+        calibrationSettings = storage.loadCalibrationSettings(calculator.DEFAULT_SETTINGS);
         bindEvents();
         updateLogDisplay(storage.loadHistory());
         calculate();
@@ -126,7 +128,7 @@
             testQty: elements.testQty.value,
             totalQty: elements.totalQty.value,
             elapsedMs: state.elapsedTime
-        });
+        }, calibrationSettings);
 
         if (!result) {
             return;

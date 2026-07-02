@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Production Pro Timer Calibration</title>
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/128/3967/3967518.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/128/3967/3967518.png">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="card calibration-card">
+    <h2>Calibration</h2>
+
+    <div class="results compact-results">
+        <h4>Known Job Check</h4>
+        <div class="flex-group">
+            <div class="input-group">
+                <label for="knownCalculated">Calculated Hours</label>
+                <input type="number" id="knownCalculated" value="3.90" min="0" step="0.01">
+            </div>
+            <div class="input-group">
+                <label for="knownActual">Actual Hours</label>
+                <input type="number" id="knownActual" value="5.05" min="0" step="0.01">
+            </div>
+        </div>
+        <p>Required Correction: <strong id="knownCorrection" class="real-prod">+29.5%</strong></p>
+    </div>
+
+    <div class="calibration-section">
+        <h3>Model Settings</h3>
+
+        <div class="slider-group">
+            <div class="slider-header">
+                <label for="baseAllowance">Base Allowance</label>
+                <strong><span id="baseAllowanceValue">0</span>%</strong>
+            </div>
+            <input type="range" id="baseAllowance" min="0" max="60" step="0.5">
+        </div>
+
+        <div class="slider-group">
+            <div class="slider-header">
+                <label for="maxFactor">Max Factor</label>
+                <strong><span id="maxFactorValue">89</span>%</strong>
+            </div>
+            <input type="range" id="maxFactor" min="0" max="150" step="1">
+        </div>
+
+        <div class="slider-group">
+            <div class="slider-header">
+                <label for="rampCurve">Ramp Curve</label>
+                <strong><span id="rampCurveValue">1.0</span>x</strong>
+            </div>
+            <input type="range" id="rampCurve" min="0.5" max="3" step="0.1">
+        </div>
+
+        <div class="slider-group">
+            <div class="slider-header">
+                <label for="batchSensitivity">Batch Sensitivity</label>
+                <strong><span id="batchSensitivityValue">100</span>%</strong>
+            </div>
+            <input type="range" id="batchSensitivity" min="0" max="100" step="1">
+        </div>
+
+        <details class="advanced-settings">
+            <summary>Advanced</summary>
+            <div class="slider-group">
+                <div class="slider-header">
+                    <label for="shiftHours">Shift Hours</label>
+                    <strong><span id="shiftHoursValue">9</span> h</strong>
+                </div>
+                <input type="range" id="shiftHours" min="6" max="12" step="0.5">
+            </div>
+        </details>
+    </div>
+
+    <div class="calibration-section">
+        <h3>Test Estimate</h3>
+        <div class="flex-group">
+            <div class="input-group">
+                <label for="sampleQty">Sample Qty</label>
+                <input type="number" id="sampleQty" value="1" min="1">
+            </div>
+            <div class="input-group">
+                <label for="totalQty">Total Qty</label>
+                <input type="number" id="totalQty" value="1" min="1">
+            </div>
+        </div>
+
+        <div class="flex-group">
+            <div class="input-group">
+                <label for="sampleMinutes">Sample Time Min</label>
+                <input type="number" id="sampleMinutes" value="234" min="0" step="0.1">
+            </div>
+            <div class="input-group">
+                <label for="actualHours">Actual Hours</label>
+                <input type="number" id="actualHours" value="5.05" min="0" step="0.01">
+            </div>
+        </div>
+
+        <div class="results compact-results">
+            <h4>Preview</h4>
+            <p>Ideal Estimate: <strong id="previewIdeal" class="highlight">0.00 h</strong></p>
+            <p>Real Estimate: <strong id="previewReal" class="real-prod">0.00 h</strong></p>
+            <p>Total Factor: <strong id="previewFactor" class="real-prod">+0.0%</strong></p>
+            <p>Error vs Actual: <strong id="previewError" class="highlight">0.0%</strong></p>
+        </div>
+    </div>
+
+    <div class="btn-row">
+        <button id="loadDefaultsBtn" class="secondary-btn reset-btn">LOAD DEFAULT</button>
+        <button id="autoFitBtn" class="secondary-btn">AUTO-FIT BASE</button>
+        <button id="saveCalibrationBtn" class="secondary-btn save-btn">SAVE</button>
+    </div>
+</div>
+
+<a href="index.html" class="methodology-link">Back to Timer</a>
+<p class="footer">Production Pro Timer By Damizon | MIT License 2026</p>
+
+<script src="js/format.js"></script>
+<script src="js/calculator.js"></script>
+<script src="js/storage-local.js"></script>
+<script src="js/calibration.js"></script>
+</body>
+</html>

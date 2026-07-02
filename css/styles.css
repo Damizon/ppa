@@ -160,6 +160,11 @@ input:not(.timer-input) {
     color: white;
 }
 
+.secondary-btn:not(.reset-btn):not(.save-btn) {
+    background: #6c757d;
+    color: white;
+}
+
 .results {
     background: #eef2f7;
     padding: 15px;
@@ -261,4 +266,64 @@ input:not(.timer-input) {
     color: #aaa;
     font-size: 12px;
     margin-top: 20px;
+}
+
+.calibration-card {
+    max-width: 560px;
+}
+
+.calibration-section {
+    margin-top: 18px;
+}
+
+.calibration-section h3 {
+    font-size: 13px;
+    color: #666;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+}
+
+.compact-results {
+    margin-top: 10px;
+}
+
+.slider-group {
+    margin-bottom: 16px;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.slider-header label {
+    margin-bottom: 0;
+}
+
+.slider-header strong {
+    color: #0056b3;
+    font-size: 13px;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: #0056b3;
+}
+
+.advanced-settings {
+    margin-top: 6px;
+}
+
+.advanced-settings summary {
+    cursor: pointer;
+    color: #0056b3;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 12px;
 }
