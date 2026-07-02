@@ -208,7 +208,14 @@
             time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
             testQty: elements.testQty.value,
             totalQty: elements.totalQty.value,
+            idealMP: elements.resMP.innerText,
+            idealUnitTime: elements.resUnitClockIdeal.innerText,
+            idealEstClock: elements.estClockIdeal.innerText,
+            idealEst: elements.estDec.innerText,
+            factor: elements.factorApplied.innerText,
             mp: elements.realMP.innerText,
+            realUnitTime: elements.realUnitClock.innerText,
+            realEstClock: elements.realEstClock.innerText,
             est: elements.realEstDec.innerText,
             duration: format.formatHms(state.elapsedTime / 1000)
         };

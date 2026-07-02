@@ -66,8 +66,11 @@
                              <td>${escapeHtml(entry.id || '-')}</td>
                              <td>${escapeHtml(formatMeasured(entry))}</td>
                              <td>${escapeHtml(entry.totalQty || '-')}</td>
+                             <td>${escapeHtml(entry.idealMP || '-')}</td>
+                             <td>${escapeHtml(formatIdealEstimate(entry))}</td>
+                             <td>${escapeHtml(entry.factor || '-')}</td>
                              <td>${escapeHtml(entry.mp || '-')}</td>
-                             <td>${escapeHtml(entry.est || '-')}</td>`;
+                             <td>${escapeHtml(formatRealEstimate(entry))}</td>`;
             elements.allLogRows.appendChild(row);
         });
     }
@@ -84,6 +87,22 @@
         const qty = entry.testQty || '-';
         const duration = entry.duration || '-';
         return `${qty} pcs / ${duration}`;
+    }
+
+    function formatIdealEstimate(entry) {
+        if (entry.idealEst && entry.idealEstClock) {
+            return `${entry.idealEst} / ${entry.idealEstClock}`;
+        }
+
+        return entry.idealEst || entry.idealEstClock || '-';
+    }
+
+    function formatRealEstimate(entry) {
+        if (entry.est && entry.realEstClock) {
+            return `${entry.est} / ${entry.realEstClock}`;
+        }
+
+        return entry.est || entry.realEstClock || '-';
     }
 
     function escapeHtml(value) {
