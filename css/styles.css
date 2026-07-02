@@ -303,6 +303,48 @@ select {
     text-decoration: none;
 }
 
+.footer-actions {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+    width: 100%;
+    max-width: 450px;
+}
+
+.footer-action {
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: white;
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 13px 14px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.footer-action-timer {
+    background: #28a745;
+}
+
+.footer-action-calibration {
+    background: #0056b3;
+}
+
+.footer-action-logs {
+    background: #6f42c1;
+}
+
+.footer-action-methodology {
+    background: #495057;
+}
+
+.footer-action:focus,
+.footer-action:hover {
+    filter: brightness(0.92);
+}
+
 .footer {
     text-align: center;
     color: #aaa;
